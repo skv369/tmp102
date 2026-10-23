@@ -3,15 +3,30 @@
  */
 #include <stdint.h>
 #include <stdio.h>
+#include "myheader.h"
 
 float tmp102_raw_to_celsius(uint16_t reg)
 {
-	int32_t raw = (reg >> 4) & 0x0FFF;	/* keep the 12 temperature bits */
-
-	if (raw & 0x0800) {			/* sign bit (T11) set -> negative */
-		raw -= 0x1000;			/* sign-extend 12-bit two's complement */
+	uint16_t val_mask, sign_mask, raw;
+	float celsius;
+	if (reg & 0x1000) {
+		shift = SHIFT_13_BIT;
+		val_mask = VAL_MASK_13_BIT;
+		sign_mask = SIGN_MASK_13_BIT;
+	} else {
+		shift = SHIFT_12_BIT;
+		val_mask = VAL_MASK_12_BIT;
+		sign_mask = SIGN_MASK_12_BIT;
 	}
-	return raw * 0.0625f;
+	
+	raw = (reg >> shift) & val_mask;
+	negative = (raw & sign_mask) != 0;
+	
+	if (negative) {
+		raw = (~raw + 1) & val_mask;
+	}
+	celsius = raw * RESOLUTION_VALUE;
+	return negative ? -celsius : celsius;
 }
 
 struct tmp102_case {

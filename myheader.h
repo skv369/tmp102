@@ -43,3 +43,14 @@
 #define TMP102_TEMP_MIN_C       (-40)
 #define TMP102_TEMP_MAX_C       125
 
+/* Macros required for temperature conversion */
+
+#define VAL_MASK_12_BIT 	0x0FFF
+#define SIGN_MASK_12_BIT 	0x0800
+#define SHIFT_12_BIT 		4
+#define VAL_MASK_13_BIT 	0x1FFF
+#define SIGN_MASK_13_BIT 	0x1000
+#define SHIFT_13_BIT 		3
+
+
+
